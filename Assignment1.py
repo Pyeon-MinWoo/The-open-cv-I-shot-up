@@ -13,9 +13,22 @@ def mouse_event_handler(event, x, y, flags, param):
 
 def free_drawing(canvas_width=640, canvas_height=480, init_brush_radius=3):
     # Prepare a canvas and palette
-    canvas = np.full((canvas_height, canvas_width, 3), 255, dtype=np.uint8)
+    canvas = np.zeros((480, 640, 3), dtype=np.uint8) # Create a color image (black)
+    canvas[:] = 255                                  # Make the color image white
+    canvas[140:240, 220:420, :] = (255, 255, 0)        # Draw the aqua box
+    canvas[240:340, 220:420, :] = (255, 0, 255)        # Draw the magenta box
     palette = [(0, 0, 0), (255, 255, 255), (0, 0, 255), (0, 255, 0), (255, 0, 0), (255, 255, 0), (255, 0, 255), (0, 255, 255)]
-
+    
+    # Draw a circle with its label
+    center = (100, 240)
+    cv.circle(canvas, center, radius=60, color=(0, 255, 0), thickness=5)
+    cv.putText(canvas, 'Computer', center, cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 255))
+    
+    # Draw a polygon (triangle) with its label
+    pts = np.array([(540, 240-50), (540-55, 240+50), (540+55, 240+50)])
+    cv.polylines(canvas, [pts], True, color=(0, 255, 255), thickness=5)
+    cv.putText(canvas, 'Vision', pts[0].flatten(), cv.FONT_HERSHEY_DUPLEX, 0.5, (255, 0, 0))
+    
     # Initialize drawing states
     mouse_state = [False, (-1, -1)] # Note) [mouse_left_button_click, mouse_xy]
     brush_color = 0
